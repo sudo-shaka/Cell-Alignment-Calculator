@@ -39,8 +39,7 @@ axis_ratio = Get_Axis_R(linker_lengths);
 merge_img = (Nuclear_Mask+Junctional_Mask);
 Make_Calc_Image(merge_img,nucleii,new_radii,linker_data);
 figure;
-plot(angles,linker_lengths);PrettyFig;
+plot(angles,linker_lengths);
 
 figure;
 histogram(axis_ratio,10);
-PrettyFig;
