@@ -1,10 +1,5 @@
 clear all; clc;
 
-cd ~/Code/matlab/image_processing/Cell_Behavoir_Project/Images/;
-
-rmdir Output
-mkdir Output
-
 Nuclear_Image =  imread("DAPI.png");
 Junctional_Image = imread("VECAD.png");
 
