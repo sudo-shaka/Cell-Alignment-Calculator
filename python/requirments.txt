@@ -1,0 +1,7 @@
+math
+opencv2
+statistics
+numpy
+matplotlib
+argparse
+pands
