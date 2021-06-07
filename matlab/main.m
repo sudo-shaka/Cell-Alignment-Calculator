@@ -1,45 +1,51 @@
-clear all; clc;
+clear; clc;
 
-Nuclear_Image =  imread("DAPI.png");
-Junctional_Image = imread("VECAD.png");
+%% Get Nucleii via circle finder and mask junctional image
+mkdir Output;
 
-Nuclear_Mask = im2bw(Nuclear_Image,0.5);
-Junctional_Mask= im2bw(Junctional_Image,.65);
+NUCLEAR_IMAGE = imread("Sample_Images/STAT_DAPI.png");
+JUNCTIONAL_IMAGE = imread("Sample_Images/STAT_VECAD.png");
 
-[centers,radii,metric] = imfindcircles(Nuclear_Mask,[15 50],'Sensitivity',0.9);
+JUNCTIONAL_IMAGE = imgaussfilt(JUNCTIONAL_IMAGE,1.5);
 
-nucleii = []; new_radii = [];
-for ii = 1:length(centers)
-    center = centers(ii,:);
-    overlapped = centers(min((abs(center-centers) < 2*radii(ii))'),:);
-    avg_overlapped = mean(overlapped);
-    
-     calculated = max(min(avg_overlapped' == reshape(nucleii,2,[])));
+J_MASK= imbinarize(JUNCTIONAL_IMAGE);
+N_MASK= imbinarize(NUCLEAR_IMAGE);
 
-    if length(avg_overlapped) == 1
-        nucleii = [nucleii,center];
-        new_radii = [new_radii,radii(ii)];
-    elseif ~calculated
-        nucleii = [nucleii,avg_overlapped];
-        new_radii = [new_radii,radii(ii)];
-    end
+J_MASK = imbinarize(J_MASK-N_MASK);
+J_MASK(J_MASK == -1)=0;
+
+[CENTERS,RADII,METRIC] = imfindcircles(N_MASK,[15 50],'Sensitivity',0.9);
+[NUCLEII,RADII] = Get_Nuc(CENTERS,RADII);
+NUCLEII= [NUCLEII,RADII'];
+
+N_LINK = 21;
+
+%% Creating structure for cells
+cell = struct(...
+    'nuclear',NUCLEII,...
+    'angles',linspace(0,2*pi,N_LINK),...
+    'linkers',zeros(5,N_LINK),...
+    'junctions',zeros(5,N_LINK-1),...
+    'AxisR',0,...
+    'Area',0 ...
+);
+%% Getting data for each cell
+cells = [];
+for ii = 1:length(NUCLEII)
+    cell.nuclear = NUCLEII(ii,:);
+    cell.linkers = Calc_Linkers(NUCLEII(ii,:),cell.angles,J_MASK);
+    cell.junctions = Calc_Junctions(cell.linkers);
+    cell.AxisR = Get_Axis_R(cell.angles,cell.linkers);
+    cell.Area = Get_Area(cell.linkers,cell.junctions);
+     cells = [cells,cell];
 end
 
-
-nucleii = reshape(nucleii,2,[])';
-
-n_linkers = 250;
-
-[linker_lengths,linker_data] = Calc_Linkers(Junctional_Mask,nucleii,n_linkers);
-angles = linker_data(:,1);
-
-linker_data = Filter_Data(linker_data);
-axis_ratio = Get_Axis_R(linker_lengths);
-
-merge_img = (Nuclear_Mask+Junctional_Mask);
-Make_Calc_Image(merge_img,nucleii,new_radii,linker_data);
-figure;
-plot(angles,linker_lengths);
-
-figure;
-histogram(axis_ratio,10);
+%% Cleaning Data
+cells2 = [];
+for cell = cells
+    if round(max(max(cell.linkers(1:4,:)))) < length(J_MASK) && round(min(min(cell.linkers(1:4,:)))) > 0
+        cells2 = [cells2,cell];
+    end
+end
+%% Plotting data for each cell
+Make_Calc_Image(J_MASK+N_MASK,cells2)

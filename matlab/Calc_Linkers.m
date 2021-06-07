@@ -1,28 +1,33 @@
-function [linker_lengths,linker_data] = Calc_Linkers(junctional_image,centers,n_linkers)
-	n_nuc = length(centers);
-	links = linspace(0,2*pi,n_linkers);
+function linkers = Calc_Linkers(CENTER,ANGLES,IMAGE)
 
-	linker_lengths = zeros(n_nuc,n_linkers);
-    linker_data = [];
-    
-	for ii = 1:n_nuc
-        linker_data_ii = zeros(n_linkers,5);
-        start_location = centers(ii,:);
-		for jj = 1:n_linkers
-			x = centers(ii,2);
-			y = centers(ii,1);
-			pixel = 0;
-			while pixel==0 && min([x,y] < size(junctional_image)) && min([round(x),round(y)]) ~= 0
-                pixel = junctional_image(round(x),round(y));
-                y = y + sin(links(jj))*0.01;
-                x = x + cos(links(jj))*0.01;
-                end_location = [y,x];
-                distance = sqrt((end_location(1).^2)+(end_location(2).^2));
-                linker_lengths(ii,jj) = distance;
-                angles = links(jj);
-                linker_data_ii(jj,:) = [angles,start_location(1),start_location(2),end_location(1),end_location(2)];
-            end
-        end
-        linker_data = [linker_data,linker_data_ii];
+	linkers = zeros(5,length(ANGLES));
+	x1 = CENTER(1);
+	y1 = CENTER(2);
+
+	for ii = 1:length(ANGLES)
+		linkers(1,ii) = x1;
+		linkers(2,ii) = y1;
+		x2 = x1; 
+        y2 = y1;
+        pixel = 0; check =0;
+        
+		while check ~= 10
+			try
+				pixel = IMAGE(round(y2),round(x2));
+				x2 = x2 + cos(ANGLES(ii))*0.1;
+				y2 = y2 + sin(ANGLES(ii))*0.1;
+                if pixel ~= 0
+                    check = check + 1;
+                else
+                    check = 0;
+                end
+                
+			catch
+				break;
+			end
+		end
+		linkers(3,ii) = x2;
+		linkers(4,ii) = y2;
     end
+    linkers(5,:) = sqrt(abs(linkers(1,:)-linkers(3,:)).^2+abs(linkers(2,:)-linkers(4,:).^2));
 end
