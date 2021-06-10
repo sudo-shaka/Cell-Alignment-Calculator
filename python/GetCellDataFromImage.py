@@ -9,9 +9,9 @@ def Get_Image_Names():
     ap = argparse.ArgumentParser()
     ap.add_argument("-n","--Nuclear", required=True,help="Path to Nuclear Image")
     ap.add_argument("-j","--Junctional",required=True, help = "Path to junctional Image")
-    ap.add_argument('-v1','--n_threshn',required=False,type=int,default=100)
-    ap.add_argument('-v2','--n_threshj',required=False,type=int,default=100)
-    ap.add_argument('-l','--n_linkers',default=100,type=int,required=False)
+    ap.add_argument('-t1','--nuclear_threshold',required=False,type=int,default=100)
+    ap.add_argument('-t2','--junctional_threshold',required=False,type=int,default=100)
+    ap.add_argument('-l','--n_linkers',default=20,type=int,required=False)
     args = vars(ap.parse_args())
     return args
 
@@ -32,17 +32,8 @@ def get_nucleus(Image,thresh_num):
     for ii in range(0,len(keypoints)):
         x_i = pts[ii][0]
         y_i = pts[ii][1]
- #       x=x_i; y=y_i
- #       pixel = image[int(x_i),int(y_i)]
-        radius = 0
- #       while pixel == 0:
- #           try:
- #               x+=0.1
- #               pixel = image[int(x),int(y)]
- #               radius+=1
- #           except IndexError:
- #               break
-        nucleus = Domains.nucleus(x_i,y_i,radius)
+        
+        nucleus = Domains.nucleus(x_i,y_i,0)
 
         nuclii.append(nucleus)
  
@@ -51,6 +42,7 @@ def get_nucleus(Image,thresh_num):
 def ThresholdJunctions(image,thesh_val):
     print("Opening Image "+image)
     image = cv2.imread(image,0)
+    image = cv2.medianBlur(image,5)
     _, image = cv2.threshold(image,thesh_val,255,cv2.THRESH_BINARY)
     return(image)
 
@@ -64,12 +56,6 @@ def Calc_Linkers(junctional_image,center,n_linkers):
         x1.append(x); y1.append(y)
         
         pixel = junctional_image[int(y)][int(x)]
-        #fix this
-#        try:
-#            pixel = junctional_image[int(y)][int(x)]
-#        except IndexError:
-#            pixel = junctional_image[int(center.center_y),int(center.center_x)]
-        
         while pixel == 0:
             try:
                 pixel = junctional_image[int(y)][int(x)]

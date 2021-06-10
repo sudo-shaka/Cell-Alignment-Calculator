@@ -20,7 +20,7 @@ class linker:
                 self.length.append(math.sqrt(((self.x2[ii]-self.x1[ii])**2)\
                     +((self.y2[ii]-self.y1[ii])**2)))
         except:
-            self.length = math.sqrt(((self.x2-self.x1)**2)+(self.y2-self.y1)**2)
+            self.length = math.sqrt((abs(self.x2-self.x1)**2)+abs(self.y2-self.y1)**2)
         return self.length
 
 class junction:
@@ -36,7 +36,7 @@ class junction:
                 self.length.append(math.sqrt(((self.x2[ii]-self.x1[ii])**2)\
                     +((self.y2[ii]-self.y1[ii])**2)))
         except:
-            self.length = math.sqrt(((self.x2-self.x1)**2)+(self.y2-self.y1)**2)
+            self.length = math.sqrt((abs(self.x2-self.x1)**2)+abs(self.y2-self.y1)**2)
         return self.length
 
 
@@ -78,23 +78,31 @@ class cell:
         n_linkers = len(linker_lengths)
         angles = np.linspace(0,2*math.pi,n_linkers)
 
-        max_value = 0; min_value = 650**2
+        max_value = 0
         for ii in range(0,n_linkers):
             angle = angles[ii]
             length = linker_lengths[ii]
 
             if angle <= math.pi:
                 angle2 = angle+math.pi
+                perpend_angle1 = angle+(math.pi/2)
+                perpend_angle2 = perpend_angle1-math.pi
             else:
                 angle2 = angle-math.pi
+                perpend_angle1 = angle-(math.pi/2)
+                perpend_angle2 = perpend_angle1+math.pi
         
             i_2 = min(range(len(angles)), key=lambda i: abs(angles[i]-angle2))
+            i_p1 = min(range(len(angles)), key=lambda i: abs(angles[i]-perpend_angle1))
+            i_p2 = min(range(len(angles)), key=lambda i: abs(angles[i]-perpend_angle2))
+            
             length = length+linker_lengths[i_2]
+            length_perpend = linker_lengths[i_p1]+linker_lengths[i_p2]
 
-            if length < min_value:
-                min_value = length
             if length > max_value:
                 max_value = length
+                min_value = length_perpend
+            
         try:
             self.axis_r = (min_value/max_value)**(-1)
         except:

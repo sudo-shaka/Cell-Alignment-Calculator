@@ -1,23 +1,25 @@
 import Domains
-import statistics as s
+import GetCellDataFromImage as GD
+import numpy as np
+import pandas as pd
+import math
 
 def Linker_Filter(cell):
     linkers = cell.linker
     junctions = cell.junction
 
-    for ii in range(0,len(junctions.length)):
-        linker1 = linkers.length[ii]
-        linker2 = linkers.length[ii+1]
-        junction = junctions.length[ii]
+    lengths = linkers.Get_Length()
+    
+    for length in lengths:
+        if length > 2*(sum(lengths)/len(lengths)):
+            length = sum(lengths)/len(lengths)
+    
+    angles = np.linspace(0,2*math.pi,len(lengths))
 
-        if junction.Get_Length() > 0.5*linker1.Get_Length() or \
-            junction.Get_Length() > 0.5*linker2.Get_Length():
-            linker2 = linker1
-        
-        linkers[ii] = linker1
-        linkers[ii+1] = linker2
-
-
+    for ii in range(0,len(lengths)):
+        linkers.y2[ii] = math.cos(angles[ii])*lengths[ii] + linkers.y1[ii]
+        linkers.x2[ii] = math.sin(angles[ii])*lengths[ii] + linkers.x1[ii]
     
     cell.linker=linkers
+    cell.junction=GD.Calc_Junctions(linkers,len(angles));
     return cell

@@ -4,6 +4,7 @@ import Domains
 import pandas as pd
 
 def ImagePlots(angles,lengths,figurename):
+    
     plt.figure()
     plt.plot(angles,lengths)
     plt.xlabel("Angle (Radians)"); plt.ylabel("Length From Nucleus (AU)")
@@ -37,24 +38,23 @@ def PopulationPlots(cells):
     plt.close('all')
 
 def MakeImage(reference_image,cells):
-    new_image = reference_image*0
+    new_image = reference_image
+    jj = 0
 
     for cell in cells:
-        #center = [int(cell.nucleus.center_x),int(cell.nucleus.center_y)]
-        color = (200,0,0)
-        
-        #fix nuclear algorithm
-        #new_image = cv2.circle(new_image,center,cell.nucleus.radius,color,thickness=2)
         
         for ii in range(0,len(cell.linker.x1)):
-            color=(255,0,0)
+            color=(0,255,0)
             start_p = [int(cell.linker.x1[ii]),int(cell.linker.y1[ii])]
             end_p = [int(cell.linker.x2[ii]),int(cell.linker.y2[ii])]
             new_image = cv2.line(new_image,start_p,end_p,color,thickness=1)
         
         for ii in range(0,len(cell.junction.x1)):
-            color = (255,0,0)
+            color = (0,0,255)
             start_p = [int(cell.junction.x1[ii]),int(cell.junction.y1[ii])]
             end_p = [int(cell.junction.x2[ii]),int(cell.junction.y2[ii])]
             new_image = cv2.line(new_image,start_p,end_p,color,thickness=1)
+        cv2.putText(new_image, str(jj), (int(cell.linker.x1[0]),int(cell.linker.y1[0])), cv2.FONT_HERSHEY_PLAIN, 2, 255)
+        jj+=1
+    
     cv2.imwrite("Output/ModelCells.png",new_image)
