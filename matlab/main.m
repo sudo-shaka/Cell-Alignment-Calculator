@@ -48,6 +48,7 @@ for cell = cells
     if round(max(max(cell.linkers(1:4,:)))) < length(J_MASK) && round(min(min(cell.linkers(1:4,:)))) > 0
         cell = Smooth_Boarders(cell);
 	sds = [sds,std(cell.linkers(5,:))];
+	cells2 = [cells2,cell];
     end
 end
 fprintf("%d cells in frame and anaylized\n",length(cells2));
