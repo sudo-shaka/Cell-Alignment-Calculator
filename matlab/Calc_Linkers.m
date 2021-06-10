@@ -9,14 +9,14 @@ function linkers = Calc_Linkers(CENTER,ANGLES,IMAGE)
 		linkers(2,ii) = y1;
 		x2 = x1; 
         y2 = y1;
-        pixel = 0; check =0;
+        check =0;
         
-		while check ~= 10
+		while check < 50
 			try
 				pixel = IMAGE(round(y2),round(x2));
 				x2 = x2 + cos(ANGLES(ii))*0.1;
 				y2 = y2 + sin(ANGLES(ii))*0.1;
-                if pixel ~= 0
+                if pixel ~= 0 && y2 ~= linkers(3,ii-1) && x2 ~= linkers(3,ii-1) && ii ~= 1
                     check = check + 1;
                 else
                     check = 0;
@@ -29,5 +29,5 @@ function linkers = Calc_Linkers(CENTER,ANGLES,IMAGE)
 		linkers(3,ii) = x2;
 		linkers(4,ii) = y2;
     end
-    linkers(5,:) = sqrt(abs(linkers(1,:)-linkers(3,:)).^2+abs(linkers(2,:)-linkers(4,:).^2));
+    linkers(5,:) = (linkers(3,:)-linkers(1,:))./cos(ANGLES);
 end

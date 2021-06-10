@@ -18,6 +18,8 @@ J_MASK(J_MASK == -1)=0;
 [NUCLEII,RADII] = Get_Nuc(CENTERS,RADII);
 NUCLEII= [NUCLEII,RADII'];
 
+fprintf("Found %d cells\n",length(NUCLEII));
+
 N_LINK = 21;
 
 %% Creating structure for cells
@@ -37,15 +39,18 @@ for ii = 1:length(NUCLEII)
     cell.junctions = Calc_Junctions(cell.linkers);
     cell.AxisR = Get_Axis_R(cell.angles,cell.linkers);
     cell.Area = Get_Area(cell.linkers,cell.junctions);
-     cells = [cells,cell];
+    cells = [cells,cell];
 end
 
 %% Cleaning Data
-cells2 = [];
+cells2 = []; sds = [];
 for cell = cells
     if round(max(max(cell.linkers(1:4,:)))) < length(J_MASK) && round(min(min(cell.linkers(1:4,:)))) > 0
-        cells2 = [cells2,cell];
+        cell = Smooth_Boarders(cell);
+	sds = [sds,std(cell.linkers(5,:))];
     end
 end
+fprintf("%d cells in frame and anaylized\n",length(cells2));
 %% Plotting data for each cell
-Make_Calc_Image(J_MASK+N_MASK,cells2)
+%Make_Calc_Image(J_MASK+N_MASK,cells);
+Make_Calc_Image(J_MASK+N_MASK,cells2);
