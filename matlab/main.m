@@ -52,6 +52,6 @@ for cell = cells
     end
 end
 fprintf("%d cells in frame and anaylized\n",length(cells2));
+
 %% Plotting data for each cell
-%Make_Calc_Image(J_MASK+N_MASK,cells);
 Make_Calc_Image(J_MASK+N_MASK,cells2);
