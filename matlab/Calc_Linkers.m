@@ -29,6 +29,5 @@ function linkers = Calc_Linkers(CENTER,ANGLES,IMAGE)
 		linkers(3,ii) = x2;
 		linkers(4,ii) = y2;
     end
-    linkers(5,:) = (linkers(3,:)-linkers(1,:))./cos(ANGLES);
     linkers(5,:) = sqrt(abs(linkers(3,:)-linkers(1,:)).^2 + abs(linkers(4,:) -linkers(2,:)).^2);
 end
