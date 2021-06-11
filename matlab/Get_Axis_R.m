@@ -15,7 +15,7 @@ function axisR = Get_Axis_R(angles,linkers)
 		end
 	end
 
-	[val,loc] = max(diff);
+	[~,loc] = max(diff);
 	
 	if angles(loc) <= pi
 		loc2 = loc + round(length(angles)/2);
