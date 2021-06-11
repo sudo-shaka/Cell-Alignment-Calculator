@@ -12,9 +12,10 @@ function area = Get_Area(linkers,junctions,name,plot)
         Y = [a(2), b(2), c(2)];
 		
         arc_area = polyarea(X,Y);
-        
-		area = area + arc_area;
-        fill(X,Y,[0,0.5,0]);
+        area = area + arc_area;
+	if plot
+        	fill(X,Y,[0,0.5,0]);
+	end
         
     end
     if plot
