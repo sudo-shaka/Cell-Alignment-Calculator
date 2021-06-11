@@ -59,32 +59,9 @@ Make_Calc_Image(J_MASK+N_MASK,cells2);
 Make_Plots(cells2);
 close all;
 
-%%
-%Extra
-extra = 1;
-if extra
+%%Saving Data
+
 Area = [cells2(:).Area]';
 Axis_R = [cells2(:).AxisR]';
-
 Cell_Data = [Area,Axis_R];
-
 csvwrite("Output/CellSize_AxisRatio.csv",Cell_Data);
-
-figure; hold on
-    plotSpread(Area);
-    boxplot(Area);
-    ylabel("Cell Area");
-    PrettyFig;
-    saveas(gcf,'Output/AreaSwarm.png');
-
-
-    figure; hold on
-    plotSpread(Axis_R);
-    boxplot(Axis_R);
-    ylabel("Axis Ratio");
-    PrettyFig;
-    saveas(gcf,'Output/AxisRSwarm.png');
-end
-
-close all;
-
