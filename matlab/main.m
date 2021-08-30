@@ -4,9 +4,9 @@ clear;
 
 mkdir Output;
 
-NUCLEAR_IMAGE = imread('Sample_Images/DAPI.png');
-JUNCTIONAL_IMAGE = imread('Sample_Images/VECAD.png');
-SIGNAL_IMAGE = imread('Sample_Images/DAPI.png');
+NUCLEAR_IMAGE = imread('../images/DAPI.png');
+JUNCTIONAL_IMAGE = imread('../images/VECAD.png');
+SIGNAL_IMAGE = imread('../images/DAPI.png');
 
 JUNCTIONAL_IMAGE = imgaussfilt(JUNCTIONAL_IMAGE,3);
 JUNCTIONAL_IMAGE = imadjust(imtophat(JUNCTIONAL_IMAGE,strel('disk',15)));
