@@ -1,5 +1,5 @@
 function  Make_Calc_Image(Reference_Image,cells)
-  %Reference_Image=Reference_Image.*0;
+  Reference_Image=Reference_Image.*0;
   figure; hold on;
   imshow(Reference_Image);
     for ii = 1:length(cells)
@@ -16,7 +16,9 @@ function  Make_Calc_Image(Reference_Image,cells)
         for jj = 1:length(cells(ii).junctions(1,:))
                 line([cells(ii).linkers(3,jj),cells(ii).linkers(3,jj+1)],[cells(ii).linkers(4,jj),cells(ii).linkers(4,jj+1)],'Color','green');
         end
-        
+
+       text(px,py,string(cells(ii).name),'color','red');
+
     end
     hold off;
     

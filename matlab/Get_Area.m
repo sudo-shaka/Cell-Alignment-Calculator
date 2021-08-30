@@ -1,8 +1,5 @@
 function area = Get_Area(linkers,junctions,name,plot)
-    area = 0;
-    if plot
-        figure; hold on;
-    end
+  area = 0;
 	for ii = 1:length(junctions)
 		a = [junctions(1,ii),junctions(2,ii)];
 		b = [junctions(3,ii),junctions(4,ii)];
@@ -12,16 +9,9 @@ function area = Get_Area(linkers,junctions,name,plot)
         Y = [a(2), b(2), c(2)];
 		
         arc_area = polyarea(X,Y);
-        area = area + arc_area;
-	if plot
-        	fill(X,Y,[0,0.5,0]);
-	end
         
-    end
-    if plot
-        hold off;
-        axis equal;
-        saveas(gcf,'Output/cell_'+string(name)+'.png');
-        close all;
+		area = area + arc_area;
+        fill(X,Y,[0,0.5,0]);
+        
     end
 end
