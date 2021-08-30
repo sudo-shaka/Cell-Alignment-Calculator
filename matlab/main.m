@@ -13,6 +13,9 @@ JUNCTIONAL_IMAGE = imadjust(imtophat(JUNCTIONAL_IMAGE,strel('disk',15)));
 
 N_MASK= bwareaopen(imbinarize(NUCLEAR_IMAGE),1);
 
+%if you are having issues with junctional detection change this best_h value. 
+%increasing the value decreses edge detection, and decreasing increases edge detections
+%(High brightness images work between 10-20, and dimmer images have required values around 4000-5000. 
 best_h =20;
 
 Pre_water = 1-(imextendedmin(JUNCTIONAL_IMAGE,best_h,4));
