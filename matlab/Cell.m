@@ -30,7 +30,7 @@ classdef Cell
 					C = C.GetArea();
 					C = C.GetPerim();
 					C = C.GetCOM();
-					%C = C.GetAxis();
+					C = C.GetAxis();
 					C = C.GetShapeParam();
 					Cells = [Cells,C];
 				end
@@ -96,7 +96,35 @@ classdef Cell
 		end
 
 		function Cell = GetAxis(Cell)
-			Cell = Cell;
+			diff = zeros(1,length(Cell.Angles));
+			lengths = Cell.Linkers.Length;
+			n = length(diff);
+
+			for ii = 1:n
+				if Cell.Angles(ii) <= pi
+					jj = ii+(round(n)/2);
+				else
+					jj = ii-(round(n)/2);
+				end
+				try
+					diff(ii) = abs(lengths(ii)-length(jj));
+				catch
+				end
+			end
+
+			[~,loc] = max(diff);
+
+			if Cell.Angles(loc) < pi;
+				loc2 = loc + round(n/2);
+			else 
+				loc2 = loc - round(n/2);
+			end
+			try
+				AxisR = lengths(loc)/lengths(loc2);
+			catch
+				AxisR = length(loc)/lengths(loc2+1);
+			end
+			Cell.AxisR = AxisR;
 		end
 
 		function Cell = GetShapeParam(Cell)
