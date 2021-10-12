@@ -5,13 +5,14 @@ classdef Cell
 		COM
 		Angles
 		Linkers
+		Linescan
 		AxisR
 		Area
 		Perimeter
 		ShapeParam
 	end
 	methods
-		function Cells = GetFromImages(Cell,nLinks,nImg,jImg)
+		function Cells = GetFromImages(Cell,nLinks,nImg,jImg,sImg)
 			nMask = imbinarize(imgaussfilt(nImg,1),'adaptive','Sensitivity',0.05);
 			nMask = imfill(nMask,'holes');
 			props = regionprops(nMask,'Centroid','Perimeter');
@@ -27,6 +28,7 @@ classdef Cell
 					C.Name = ii;
 					C.Angles = linspace(0,pi*2,nLinks);
 					C = C.CalcLinkers(20,jImg);
+					C = C.LineScans(sImg);
 					C = C.GetArea();
 					C = C.GetPerim();
 					C = C.GetCOM();
@@ -70,8 +72,27 @@ classdef Cell
 
 				Cell.Linkers.Coords(1,ii) = x2;
 				Cell.Linkers.Coords(2,ii) = y2;
-				Cell.Linkers.Length(ii) = sqrt(abs(x2-x1)^2 - abs(y2-y1)^2);
+				Cell.Linkers.Length(ii) = sqrt(abs(x2-x1)^2 + abs(y2-y1)^2);
 			end
+		end
+		function Cell = LineScans(Cell,sImg)
+			n = length(Cell.Angles);
+			longest_length = ceil(max(Cell.Linkers.Length))+1;
+			out = zeros(n,longest_length);
+			x1 = Cell.Nuclear(1);
+			y1 = Cell.Nuclear(2);
+			x2 = Cell.Linkers.Coords(1,:);
+			y2 = Cell.Linkers.Coords(2,:);
+
+			for ii = 1:n
+				x = [x1,x2(ii)];
+				y = [y1,y2(ii)];
+				linescan = improfile(sImg,x,y);
+				nu = max(numel(out(ii,:)),numel(linescan));
+				linescan(end+1:nu) = nan;
+				out(ii,:) = linescan;
+			end
+			Cell.Linescan = out;
 		end
 		function Cell = GetArea(Cell);
 			Cell.Area = polyarea(Cell.Linkers.Coords(1,:),Cell.Linkers.Coords(2,:));
