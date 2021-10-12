@@ -6,4 +6,5 @@ function [image1,image2,image3] = Get_Images()
 	image1 = imread(append(nPath,nFile));
 	image2 = imread(append(jPath,jFile));
 	%image3 = imread(append(sPath,sFile));
+	image3 = image2;
 end
