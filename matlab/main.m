@@ -4,8 +4,11 @@ clc; close all; clear;
 mkdir Output
 C = Cell;
 N_LINK = 25; %change this value to alter the number of points calculated at the cell perimeter. Larger number is more sensitive but takes more time...
+
+%getting cell data
 Cells = C.GetFromImages(N_LINK,N_IMG,J_IMG,S_IMG);
 
+%excluding cells that are not fully in frame. 
 cells_in_frame = [];
 for c = Cells
 	if round(max(max(c.Linkers.Coords))) < length(J_IMG) && ...
@@ -16,7 +19,7 @@ end
 
 fprintf('Found %d cells\n',length(cells_in_frame));
 
-PLOT = 1;
+PLOT = 1; %change to zero to make calculations but not plot anything
 if PLOT
 	IMG = (J_IMG.*0)+1;
 	figure;
