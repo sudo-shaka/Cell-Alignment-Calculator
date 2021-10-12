@@ -3,7 +3,8 @@ clc; close all; clear;
 
 mkdir Output
 C = Cell;
-Cells = C.GetFromImages(25,N_IMG,J_IMG,S_IMG);
+N_LINK = 25; %change this value to alter the number of points calculated at the cell perimeter. Larger number is more sensitive but takes more time...
+Cells = C.GetFromImages(N_LINK,N_IMG,J_IMG,S_IMG);
 
 cells_in_frame = [];
 for c = Cells
