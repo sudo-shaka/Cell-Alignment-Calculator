@@ -17,12 +17,10 @@ classdef Cell
 			nMask = imfill(nMask,'holes');
 			props = regionprops(nMask,'Centroid','Perimeter');
 
-			fprintf('Found %d cells\n',length(props));
-
-			Cells = [];
+			Cells = []; 
 
 			for ii = 1:length(props)
-				if props(ii).Perimeter > 30
+				if props(ii).Perimeter > (max([props(:).Perimeter]) - 50)
 					C = Cell;
 					C.Nuclear = props(ii).Centroid;
 					C.Name = ii;
@@ -106,7 +104,6 @@ classdef Cell
 			Cell.Perimeter = sum(p);
 		end
 		function Cell = GetCOM(Cell)
-			%warning('off','all');
 			pshape = polyshape(Cell.Linkers.Coords(1,:),...
 				Cell.Linkers.Coords(2,:));
 			[x,y] = centroid(pshape);
@@ -155,7 +152,9 @@ classdef Cell
 		function PlotCell(Cell)
 			plot(Cell.Nuclear(1),Cell.Nuclear(2),'ro');
 			hold on;
+			plot(Cell.COM(1),Cell.COM(2),'go')
 			plot(Cell.Linkers.Coords(1,:),Cell.Linkers.Coords(2,:),'.b');
+			line(Cell.Linkers.Coords(1,:),Cell.Linkers.Coords(2,:),'color','green');
 		end
 	end
 end
