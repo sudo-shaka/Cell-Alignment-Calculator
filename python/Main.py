@@ -16,9 +16,10 @@ def main():
     jImg = cv.imread(args['junctional'])
     sImg = None if args['signal'] == None else cv.imread(args['signal'])
 
-    
+    print("Starting to gather information")
     D = Domain.Domain(nImg,jImg,sImg,args['nlink'])
-    D.PlotDomain()
+    print(str(D.n_cells)+" cells found")
+    D.MakeCalcImage()
 
 if __name__ == "__main__":
 	main()
