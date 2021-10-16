@@ -9,7 +9,7 @@ def main():
     ap.add_argument('-n','--nuclear',required = True, help = "Path to nuclear image")
     ap.add_argument('-j','--junctional',required = True, help = "Path to junctional images")
     ap.add_argument('-s','--signal',required = False,default = None, help = "Path to junctional images")
-    ap.add_argument('-l','--nlink',required = False, type = int, default=20)
+    ap.add_argument('-l','--nlink',required = False, type = int, default=35)
     args = vars(ap.parse_args())
 
     nImg = cv.imread(args['nuclear'])
