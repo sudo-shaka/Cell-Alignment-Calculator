@@ -2,7 +2,6 @@ clc; close all; clear;
 
 %% Reading Images
 [N_IMG,J_IMG,S_IMG] = Get_Images();
-%[N_IMG,J_IMG,S_IMG] = Get_Image_FromLIF();
 
 %% Obtaining Cell data from Image
 C = Cell;
@@ -12,7 +11,7 @@ Cells = C.GetFromImages(N_LINK,N_IMG,J_IMG,S_IMG);
 
 cells_in_frame = [];
 for c = Cells
-    %exclude cells at the boarder
+    %exclude cells at the border
 	if round(max(max(c.Linkers.Coords))) < length(J_IMG) && ...
 			round (min(min(c.Linkers.Coords))) > 0
 		cells_in_frame = [cells_in_frame,c];
