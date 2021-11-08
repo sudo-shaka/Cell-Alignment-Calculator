@@ -1,16 +1,18 @@
 clc; close all; clear;
+
+%% Reading Images
 [N_IMG,J_IMG,S_IMG] = Get_Images();
+%[N_IMG,J_IMG,S_IMG] = Get_Image_FromLIF();
 
-mkdir Output
+%% Obtaining Cell data from Image
 C = Cell;
-N_LINK = 25; %change this value to alter the number of points calculated at the cell perimeter. Larger number is more sensitive but takes more time...
+N_LINK = 25;
 
-%getting cell data
 Cells = C.GetFromImages(N_LINK,N_IMG,J_IMG,S_IMG);
 
-%excluding cells that are not fully in frame. 
 cells_in_frame = [];
 for c = Cells
+    %exclude cells at the boarder
 	if round(max(max(c.Linkers.Coords))) < length(J_IMG) && ...
 			round (min(min(c.Linkers.Coords))) > 0
 		cells_in_frame = [cells_in_frame,c];
@@ -18,8 +20,11 @@ for c = Cells
 end
 
 fprintf('Found %d cells\n',length(cells_in_frame));
+%% Plotting Data
+mkdir Output
 
-PLOT = 1; %change to zero to make calculations but not plot anything
+PLOT = 1;
+
 if PLOT
 	IMG = (J_IMG.*0)+1;
 	figure;
@@ -33,3 +38,14 @@ if PLOT
 	Plot_Polarization(cells_in_frame);
 	saveas(gcf,'Output/CellPolarization.png');
 end
+
+%% Saving data
+Number = [cells_in_frame(:).Name]';
+Area  =[cells_in_frame(:).Area]';
+Perimeters = [cells_in_frame(:).Perimeter]';
+ShapeParams  = [cells_in_frame(:).ShapeParam]';
+AxisR = [cells_in_frame(:).AxisR]';
+MeanIntensity = [cells_in_frame(:).Intensity]';
+T = table(Number,Area,Perimeters,ShapeParams,AxisR,MeanIntensity);
+writetable(T,"Output/results.csv","WriteRowNames",true);
+disp("Done! See output folder");
