@@ -1,5 +1,5 @@
 # Cell-Alignment-Calculator
-Used to get the shapes of cells in a mono-layer with nuclear and junctional protein stains. It then determines the cell axis ratio (alignment), perimeter, cell area, nuclear position, center of mass, and the polarity of a given signal.
+Used to get the shapes of cells in a monolayer with nuclear and junctional protein stains. It then determines the cell axis ratio (alignment), perimeter, cell area, nuclear position, center of mass, and the polarity of a given signal.
 
 It requires a nuclear stain and a junctional stain to use. Hand drawn cell boarders can also be used as input. 
 
