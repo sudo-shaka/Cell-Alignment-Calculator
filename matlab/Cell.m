@@ -26,7 +26,7 @@ classdef Cell
 					C.Nuclear = props(ii).Centroid;
 					C.Name = ii;
 					C.Angles = linspace(0,pi*2,nLinks);
-					C.Linkers = C.CalcLinkers(20,jImg);
+					C.Linkers = C.CalcLinkers(jImg);
 					C.Linescan = C.LineScans(sImg);
 					C.Area = C.GetArea();
 					C.Perimeter = C.GetPerim();
@@ -39,10 +39,10 @@ classdef Cell
 			end
 
 		end
-        function Linkers = CalcLinkers(Cell,H,jImg)
+        function Linkers = CalcLinkers(Cell,jImg)
 			jImg = imgaussfilt(jImg,3);
 			jImg = imadjust(imtophat(jImg,strel('disk',15)));
-			Pre_water = 1-(imextendedmin(jImg,H,4));
+			Pre_water = 1-(imextendedmin(jImg,mean(jImg,'all'),4));
 			Water = watershed(Pre_water,8);
 			jMask = (Water == 0);
 			imwrite(jMask,'Output/jMask.png');
